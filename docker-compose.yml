@@ -11,7 +11,7 @@ services:
     ports:
       - "5029:5029/udp"
     volumes:
-      - "./addons:/addons"    # Drop addon files here (.wad, .pk3, etc.)
+      - "./mods:/mods"        # Drop mod files here (.wad, .pk3, etc.)
       - "./data:/data"        # Server data and config (adedserv.cfg)
     deploy:
       resources:

@@ -64,10 +64,11 @@ RUN set -e; \
 
 COPY --from=build /SRB2/bin/lsdl2srb2 /SRB2/bin/lsdl2srb2
 COPY --from=gamedata /gamedata /SRB2/
+COPY adedserv.cfg /defaults/adedserv.cfg
 
 RUN chown -R srb2:srb2 /SRB2
 
-VOLUME /addons
+VOLUME /mods
 VOLUME /data
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

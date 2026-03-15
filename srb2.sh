@@ -26,19 +26,20 @@ fi
 # Fix volume permissions if running as root
 if [ "$(id -u)" = "0" ]; then
     mkdir -p /data/.srb2
+    [ ! -f /data/.srb2/adedserv.cfg ] && cp /defaults/adedserv.cfg /data/.srb2/adedserv.cfg
     chown -R srb2:srb2 /data
     exec gosu srb2 "$0" "$@"
 fi
 
 shopt -s nullglob
-ADDONS=(/addons/*)
+ADDONS=(/mods/*)
 shopt -u nullglob
 
 # Filter to recognized addon file types only
 FILTERED_ADDONS=()
 for f in "${ADDONS[@]}"; do
     case "$f" in
-        *.wad|*.pk3|*.soc|*.lua|*.kart|*.cfg)
+        *.wad|*.pk3|*.soc|*.lua|*.cfg)
             FILTERED_ADDONS+=("$f") ;;
     esac
 done
@@ -50,12 +51,12 @@ EXTRA=()
 echo "=== SRB2 Dedicated Server ==="
 echo "Binary: /SRB2/bin/lsdl2srb2"
 if [ ${#FILTERED_ADDONS[@]} -gt 0 ]; then
-    echo "Addons (${#FILTERED_ADDONS[@]}):"
+    echo "Mods (${#FILTERED_ADDONS[@]}):"
     for a in "${FILTERED_ADDONS[@]}"; do
         echo "  - $(basename "$a")"
     done
 else
-    echo "Addons: none"
+    echo "Mods: none"
 fi
 echo "Extra args: $*"
 echo "=============================="

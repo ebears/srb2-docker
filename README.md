@@ -1,6 +1,6 @@
 # srb2-docker
 
-Run a [Sonic Robo Blast 2](https://srb2.org/) dedicated server in Docker. Drop in addons, restart, done.
+Run a [Sonic Robo Blast 2](https://srb2.org/) dedicated server in Docker. Drop in mods, restart, done.
 
 ## Prerequisites
 
@@ -19,21 +19,22 @@ Or with plain Docker:
 docker run -d \
   --name srb2 \
   -p 5029:5029/udp \
-  -v ./addons:/addons \
+  -v ./mods:/mods \
   -v ./data:/data \
   ghcr.io/ebears/srb2-docker:latest
 ```
 
-Server config is created at `data/.srb2/adedserv.cfg` on first run. See the [SRB2 Wiki -- Server Options](https://wiki.srb2.org/wiki/Console/Variables#Server_options) for available variables.
+A default server config is copied to `data/.srb2/adedserv.cfg` on first run. Edit it to customize your server. See the [SRB2 Wiki -- Server Options](https://wiki.srb2.org/wiki/Console/Variables#Server_options) for available variables.
 
-## Addons
 
-Place `.wad`, `.pk3`, `.soc`, `.lua`, `.kart`, or `.cfg` files in the `addons/` directory. They load automatically on startup.
+## Mods
 
-To add or remove addons, copy the files in and restart:
+Place `.wad`, `.pk3`, `.soc`, `.lua`, or `.cfg` files in the `mods/` directory. They load automatically on startup.
+
+To add or remove mods, copy the files in and restart:
 
 ```bash
-cp my-mod.pk3 addons/
+cp my-mod.pk3 mods/
 docker compose restart
 ```
 
@@ -85,12 +86,12 @@ SRB2_IMAGE="" docker compose up -d --build
 
 | Volume | Purpose |
 |--------|---------|
-| `/addons` | Optional mods/addons (`.wad`, `.pk3`, etc.) loaded automatically via `-file` |
+| `/mods` | Optional mods (`.wad`, `.pk3`, etc.) loaded automatically via `-file` |
 | `/data` | Home directory for server data and config file (`data/.srb2/adedserv.cfg`) |
 
 ## Resource Limits
 
-The default Compose file sets a 512 MB memory limit, 2 CPU cores, `restart: unless-stopped`, and a healthcheck that verifies the `lsdl2srb2` process is running (every 30s, 3 retries). Adjust `mem_limit` and `cpus` in `docker-compose.yml` based on your player count and addons.
+The default Compose file sets a 512 MB memory limit, 2 CPU cores, `restart: unless-stopped`, and a healthcheck that verifies the `lsdl2srb2` process is running (every 30s, 3 retries). Adjust `mem_limit` and `cpus` in `docker-compose.yml` based on your player count and mods.
 
 ## Server Console
 
@@ -113,7 +114,7 @@ docker compose pull
 docker compose up -d
 ```
 
-This pulls the latest image and recreates the container. Your `data/` and `addons/` volumes are preserved.
+This pulls the latest image and recreates the container. Your `data/` and `mods/` volumes are preserved.
 
 ## Networking
 
@@ -125,7 +126,7 @@ SRB2 uses **UDP port 5029**. If running behind a NAT/firewall, forward this port
 |---------|----------|
 | Container exits immediately | Check logs: `docker compose logs srb2`. Usually a missing game data file or port conflict. |
 | Port already in use | Another process is using UDP 5029. Stop it or change the host port mapping (e.g., `"5030:5029/udp"`). |
-| Addons not loading | Ensure files are in `addons/` with supported extensions (`.wad`, `.pk3`, `.soc`, `.lua`, `.kart`, `.cfg`). Check logs for error messages. |
+| Mods not loading | Ensure files are in `mods/` with supported extensions (`.wad`, `.pk3`, `.soc`, `.lua`, `.cfg`). Check logs for error messages. |
 | `docker compose` command not found | Install Docker Compose v2, or use `docker-compose` (with hyphen) for v1. |
 | Server not visible to other players | Verify port forwarding on your router and that your firewall allows UDP 5029. |
 | Build fails during game data download | The GitHub API rate limit may have been reached. Wait an hour or use a GitHub token. |

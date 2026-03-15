@@ -6,5 +6,5 @@
 .aider*
 
 # Runtime directories created by docker compose
-addons/
+mods/
 data/
