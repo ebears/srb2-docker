@@ -3,6 +3,12 @@ name: Build SRB2 Docker Image
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - '.claude/**'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'LICENSE'
   pull_request:
     branches: [main]
   workflow_dispatch:
