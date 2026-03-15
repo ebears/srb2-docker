@@ -20,7 +20,7 @@ RUN if [ "$SRB2_VERSION" = "auto" ]; then \
 WORKDIR /SRB2
 RUN make -j$(nproc)
 
-FROM alpine:3.23@sha256:59855d3dceb3ae53991193bd03301e082b2a7faa56a514b03527ae0ec2ce3a95 AS gamedata
+FROM alpine:3.23@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS gamedata
 ARG SRB2_VERSION=auto
 RUN apk add --no-cache wget unzip jq curl
 RUN mkdir -p /gamedata && \
