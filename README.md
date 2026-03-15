@@ -1,31 +1,135 @@
 # srb2-docker
 
-Docker-compose for running a Sonic Robo Blast 2 dedicated server.
+Run a [Sonic Robo Blast 2](https://srb2.org/) dedicated server in Docker. Drop in addons, restart, done.
 
-## Usage
+## Prerequisites
 
-### Basic
+- [Docker](https://docs.docker.com/get-docker/) 20.10+
+- [Docker Compose](https://docs.docker.com/compose/install/) v2 (the `docker compose` command, not `docker-compose`)
 
-I prefer to use docker-compose, so I've included the docker-compose.yml file. Here is an example of how to run this container:
+## Quick Start
 
-1. ```git clone https://github.com/ebears/srb2-docker.git```
-2. ```cd srb2-docker```
-3. ```nano docker-compose.yml``` Edit this file to your liking - i.e. addons, server config...
-4. ```docker-compose up -d```
+```bash
+docker compose up -d
+```
 
-Wait for the container to be built, and you'll be left with the stack 'SRB2' running in Docker. The console output will give you any and all important info regarding your dedicated server.
+Or with plain Docker:
 
-#### Requirements
+```bash
+docker run -d \
+  --name srb2 \
+  -p 5029:5029/udp \
+  -v ./addons:/addons \
+  -v ./data:/data \
+  ghcr.io/ebears/srb2-docker:latest
+```
 
-This container *requires* **player.dta**, **srb2.pk3** and **zones.pk3** in the same directory as the Dockerfile. These can simply be copied over from an already existing installion of SRB2.
+Server config is created at `data/.srb2/adedserv.cfg` on first run. See the [SRB2 Wiki -- Server Options](https://wiki.srb2.org/wiki/Console/Variables#Server_options) for available variables.
 
-### Advanced
+## Addons
 
-#### Configuration
+Place `.wad`, `.pk3`, `.soc`, `.lua`, `.kart`, or `.cfg` files in the `addons/` directory. They load automatically on startup.
 
-For the server to save configuration data, bind the `/config` volume to a host directory.\
-In order to configure server variables, create `adedserv.cfg`, and edit it. Documentation [here](https://wiki.srb2.org/wiki/Console/Variables#Server_options) at the SRB2 Wiki.
+To add or remove addons, copy the files in and restart:
 
-#### Addons
+```bash
+cp my-mod.pk3 addons/
+docker compose restart
+```
 
-In order to load addons, bind the `/addons` volume to a host directory. The server should load them automatically the next time the container is created.
+## Custom Server Arguments
+
+Extra arguments are forwarded to the SRB2 process. In Compose:
+
+```yaml
+services:
+  srb2:
+    image: ghcr.io/ebears/srb2-docker:latest
+    command: ["-maxplayers", "16"]
+```
+
+With `docker run`, append them after the image name:
+
+```bash
+docker run -d -p 5029:5029/udp ... ghcr.io/ebears/srb2-docker:latest -maxplayers 16
+```
+
+## Version Tags
+
+Images are tagged with the SRB2 game version they were built against. To pin to a specific version:
+
+```yaml
+image: ghcr.io/ebears/srb2-docker:Release2.2.15
+```
+
+The `latest` tag always tracks the most recent SRB2 release.
+
+## Building from Source
+
+To build the image yourself instead of pulling from GHCR:
+
+```bash
+docker build -t srb2-docker .
+
+# Or pin to a specific SRB2 version:
+docker build --build-arg SRB2_VERSION=Release2.2.15 -t srb2-docker .
+```
+
+Then in `docker-compose.yml`, set `SRB2_IMAGE` to empty and uncomment the `build:` block:
+
+```bash
+SRB2_IMAGE="" docker compose up -d --build
+```
+
+## Volumes
+
+| Volume | Purpose |
+|--------|---------|
+| `/addons` | Optional mods/addons (`.wad`, `.pk3`, etc.) loaded automatically via `-file` |
+| `/data` | Home directory for server data and config file (`data/.srb2/adedserv.cfg`) |
+
+## Resource Limits
+
+The default Compose file sets a 512 MB memory limit, 2 CPU cores, `restart: unless-stopped`, and a healthcheck that verifies the `lsdl2srb2` process is running (every 30s, 3 retries). Adjust `mem_limit` and `cpus` in `docker-compose.yml` based on your player count and addons.
+
+## Server Console
+
+To send commands to the running server:
+
+```bash
+# View server output
+docker compose logs -f srb2
+
+# Attach to the server console (Ctrl+P, Ctrl+Q to detach without stopping)
+docker attach srb2
+```
+
+> **Note:** Using `Ctrl+C` while attached will stop the server. Use the detach sequence above instead.
+
+## Updating
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+This pulls the latest image and recreates the container. Your `data/` and `addons/` volumes are preserved.
+
+## Networking
+
+SRB2 uses **UDP port 5029**. If running behind a NAT/firewall, forward this port to your host machine. Players connect via your public IP or hostname.
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Container exits immediately | Check logs: `docker compose logs srb2`. Usually a missing game data file or port conflict. |
+| Port already in use | Another process is using UDP 5029. Stop it or change the host port mapping (e.g., `"5030:5029/udp"`). |
+| Addons not loading | Ensure files are in `addons/` with supported extensions (`.wad`, `.pk3`, `.soc`, `.lua`, `.kart`, `.cfg`). Check logs for error messages. |
+| `docker compose` command not found | Install Docker Compose v2, or use `docker-compose` (with hyphen) for v1. |
+| Server not visible to other players | Verify port forwarding on your router and that your firewall allows UDP 5029. |
+| Build fails during game data download | The GitHub API rate limit may have been reached. Wait an hour or use a GitHub token. |
+
+## CI/CD
+
+Pushes to `main` build the image and publish it to [GHCR](https://ghcr.io). Pull requests to `main` also trigger builds to validate the image (but do not push). Images are tagged with `latest`, the SRB2 version, and the commit SHA. Trivy vulnerability scanning runs on each push.

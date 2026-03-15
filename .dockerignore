@@ -1,0 +1,10 @@
+.git/
+.github/
+.claude/
+.gitignore
+.dockerignore
+README.md
+LICENSE
+CLAUDE.md
+addons/
+data/
