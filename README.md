@@ -15,7 +15,11 @@
 
 ## Quick Start
 
+Pick a directory for your server, then clone this repo (or just grab `docker-compose.yml`):
+
 ```bash
+mkdir ~/srb2-server && cd ~/srb2-server
+git clone https://github.com/ebears/srb2-docker.git .
 docker compose up -d
 ```
 
@@ -35,6 +39,8 @@ docker run -d \
   -v ./data:/data \
   ghcr.io/ebears/srb2-docker:latest
 ```
+
+Run this from the directory where you want server data to live -- `./mods` and `./data` are relative paths and will be created automatically.
 
 </details>
 
