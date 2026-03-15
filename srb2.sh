@@ -5,6 +5,31 @@ if [ ! -x /SRB2/bin/lsdl2srb2 ]; then
     exit 1
 fi
 
+# Validate required game data files
+REQUIRED_FILES=(srb2.pk3 zones.pk3 characters.pk3 models.dat music.pk3)
+MISSING=()
+for f in "${REQUIRED_FILES[@]}"; do
+    if [ ! -f "/SRB2/$f" ]; then
+        MISSING+=("$f")
+    fi
+done
+if [ ${#MISSING[@]} -gt 0 ]; then
+    echo "ERROR: Missing required game data files:"
+    for f in "${MISSING[@]}"; do
+        echo "  - $f"
+    done
+    echo "Available files in /SRB2/:"
+    ls -la /SRB2/
+    exit 1
+fi
+
+# Fix volume permissions if running as root
+if [ "$(id -u)" = "0" ]; then
+    mkdir -p /data/.srb2
+    chown -R srb2:srb2 /data
+    exec gosu srb2 "$0" "$@"
+fi
+
 shopt -s nullglob
 ADDONS=(/addons/*)
 shopt -u nullglob

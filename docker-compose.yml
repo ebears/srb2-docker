@@ -16,6 +16,6 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512m
+          memory: 1024m
           cpus: "2.0"
     # command: ["-maxplayers", "16"]

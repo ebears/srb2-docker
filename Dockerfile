@@ -38,8 +38,8 @@ RUN mkdir -p /gamedata && \
     cd /tmp && \
     wget -q "$GAMEDATA_URL" -O gamedata.zip && \
     unzip -jo gamedata.zip "*.dat" "*.pk3" -d /gamedata/ && \
-    unzip -jo gamedata.zip "*.dta" -d /gamedata/ 2>/dev/null || true && \
-    rm gamedata.zip
+    rm gamedata.zip && \
+    echo "Extracted files:" && ls -la /gamedata/
 
 FROM ubuntu:${UBUNTU_VERSION}@sha256:98ff7968124952e719a8a69bb3cccdd217f5fe758108ac4f21ad22e1df44d237
 
@@ -47,7 +47,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libsdl2-2.0-0 libsdl2-mixer-2.0-0 libgme0 libopenmpt0 libpng16-16 \
-    libminiupnpc17 libcurl4 ca-certificates \
+    libminiupnpc17 libcurl4 ca-certificates gosu \
     && rm -rf /var/lib/apt/lists/*
 
 RUN set -e; \
@@ -79,6 +79,4 @@ COPY --chmod=755 srb2.sh /usr/bin/srb2.sh
 
 WORKDIR /SRB2
 
-USER srb2
-
-ENTRYPOINT ["srb2.sh"]
+ENTRYPOINT ["/usr/bin/srb2.sh"]
