@@ -1,9 +1,15 @@
-# srb2-docker
+<p align="center">
+  <img src="assets/logo.gif" alt="srb2-docker" width="480">
+</p>
 
-Run a [Sonic Robo Blast 2](https://srb2.org/) dedicated server in Docker. Drop in mods, restart, done.
+<p align="center">
+  Run a <a href="https://srb2.org/">Sonic Robo Blast 2</a> dedicated server in Docker. Drop in mods, restart, done.
+</p>
 
-[![Docker Image](https://img.shields.io/badge/image-ghcr.io%2Febears%2Fsrb2--docker-blue?logo=docker&logoColor=white)](https://github.com/ebears/srb2-docker/pkgs/container/srb2-docker)
-[![CI](https://img.shields.io/github/actions/workflow/status/ebears/srb2-docker/build.yml?branch=main&label=build)](https://github.com/ebears/srb2-docker/actions)
+<p align="center">
+  <a href="https://github.com/ebears/srb2-docker/pkgs/container/srb2-docker"><img src="https://img.shields.io/badge/image-ghcr.io%2Febears%2Fsrb2--docker-blue?logo=docker&logoColor=white" alt="Docker Image"></a>
+  <a href="https://github.com/ebears/srb2-docker/actions"><img src="https://img.shields.io/github/actions/workflow/status/ebears/srb2-docker/build.yml?branch=main&label=build" alt="CI"></a>
+</p>
 
 ---
 
@@ -15,6 +21,9 @@ docker compose up -d
 
 A default server config is copied to `data/.srb2/adedserv.cfg` on first run. Edit it to customize your server -- see the [SRB2 Wiki: Server Options](https://wiki.srb2.org/wiki/Console/Variables#Server_options) for available variables.
 
+<p align="center">
+  <img src="assets/reading.gif" alt="Sonic reading" width="320">
+</p>
 <details>
 <summary>Using plain Docker (without Compose)</summary>
 
