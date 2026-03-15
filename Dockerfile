@@ -63,9 +63,9 @@ RUN set -e; \
     fi
 
 COPY --from=build /SRB2/bin/lsdl2srb2 /SRB2/bin/lsdl2srb2
-COPY --from=gamedata /gamedata /SRB2/bin/
+COPY --from=gamedata /gamedata /SRB2/
 
-RUN chown -R srb2:srb2 /SRB2/bin
+RUN chown -R srb2:srb2 /SRB2
 
 VOLUME /addons
 VOLUME /data
