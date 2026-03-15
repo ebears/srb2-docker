@@ -46,7 +46,7 @@ FROM ubuntu:${UBUNTU_VERSION}@sha256:98ff7968124952e719a8a69bb3cccdd217f5fe75810
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libsdl2-2.0-0 libsdl2-mixer-2.0-0 libgme0 libopenmpt0 \
+    libsdl2-2.0-0 libsdl2-mixer-2.0-0 libgme0 libopenmpt0 libpng16-16 \
     libminiupnpc17 libcurl4 ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
