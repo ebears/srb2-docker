@@ -67,6 +67,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Install Trivy
+        if: github.event_name == 'push'
+        uses: aquasecurity/setup-trivy@v0.2.5
+
       - name: Run Trivy vulnerability scanner
         if: github.event_name == 'push'
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
@@ -74,6 +78,7 @@ jobs:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           format: sarif
           output: trivy-results.sarif
+          skip-setup-trivy: true
 
       - name: Upload Trivy scan results
         if: github.event_name == 'push'
