@@ -45,7 +45,7 @@ for f in "${ADDONS[@]}"; do
 done
 
 EXTRA=()
-[ ${#FILTERED_ADDONS[@]} -gt 0 ] && EXTRA=(-file "${FILTERED_ADDONS[@]}")
+[ "${#FILTERED_ADDONS[@]}" -gt 0 ] && EXTRA=(-file "${FILTERED_ADDONS[@]}")
 
 # Startup logging
 echo "=== SRB2 Dedicated Server ==="

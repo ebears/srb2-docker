@@ -8,6 +8,7 @@ services:
     #     SRB2_VERSION: ${SRB2_VERSION:-auto}
     container_name: srb2
     restart: unless-stopped
+    stop_grace_period: 30s
     ports:
       - "5029:5029/udp"
     volumes:
@@ -18,4 +19,8 @@ services:
         limits:
           memory: 1024m
           cpus: "2.0"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     # command: ["-maxplayers", "16"]

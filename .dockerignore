@@ -1,6 +1,8 @@
 .git/
 .github/
 .claude/
+.superpowers/
+assets/
 .gitignore
 .dockerignore
 README.md
