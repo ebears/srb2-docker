@@ -1,7 +1,7 @@
 ARG UBUNTU_VERSION=24.04
 
 # Resolve SRB2_VERSION=auto to actual tag once, shared by build and gamedata stages
-FROM alpine:3.23@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS version
+FROM alpine:3.24@sha256:a2d49ea686c2adfe3c992e47dc3b5e7fa6e6b5055609400dc2acaeb241c829f4 AS version
 ARG SRB2_VERSION=auto
 RUN apk add --no-cache curl jq
 RUN if [ "$SRB2_VERSION" = "auto" ]; then \
@@ -28,7 +28,7 @@ RUN SRB2_VERSION=$(cat /resolved_version) && \
 WORKDIR /SRB2
 RUN make -j$(nproc)
 
-FROM alpine:3.23@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS gamedata
+FROM alpine:3.24@sha256:a2d49ea686c2adfe3c992e47dc3b5e7fa6e6b5055609400dc2acaeb241c829f4 AS gamedata
 RUN apk add --no-cache wget unzip jq curl
 COPY --from=version /resolved_version /resolved_version
 RUN SRB2_VERSION=$(cat /resolved_version) && \
