@@ -51,7 +51,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libsdl2-2.0-0 libsdl2-mixer-2.0-0 libgme0 libopenmpt0 libpng16-16 \
     libminiupnpc17 libcurl4 ca-certificates gosu \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get upgrade -y \
+    && apt-get autoremove -y \
+    && apt-get clean
 
 RUN set -e; \
     if ! getent group srb2 >/dev/null; then \
@@ -64,6 +66,13 @@ RUN set -e; \
       if [ -n "$existing" ]; then usermod -l srb2 -g srb2 -m -d /home/srb2 "$existing"; \
       else useradd -u 1000 -g srb2 -m srb2; fi; \
     fi
+
+# Purge build-time-only packages not needed at runtime.
+# passwd provides useradd/groupadd (used above to create srb2 user) but
+# is not needed at runtime. login is Essential:yes so can't be purged.
+RUN apt-get purge -y passwd \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /SRB2/bin/lsdl2srb2 /SRB2/bin/lsdl2srb2
 COPY --from=gamedata /gamedata /SRB2/
